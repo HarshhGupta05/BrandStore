@@ -68,7 +68,7 @@ export default function ProductDetailPage() {
               {product.category}
             </div>
             <h1 className="mb-4 text-3xl font-bold text-balance">{product.name}</h1>
-            <p className="mb-4 text-4xl font-bold text-primary">${product.price.toFixed(2)}</p>
+            <p className="mb-4 text-4xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
             {isOutOfStock && <p className="mb-2 text-destructive font-semibold">Out of Stock</p>}
             <p className="text-muted-foreground leading-relaxed">{product.description}</p>
           </div>

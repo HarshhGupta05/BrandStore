@@ -100,14 +100,14 @@ export default function AdminOrdersPage() {
                             <span>
                               {item.quantity}x {item.productName} {item.selectedSize && `(${item.selectedSize})`}
                             </span>
-                            <span className="ml-2 font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                            <span className="ml-2 font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
                           </div>
                         ))}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-2">
-                        <div className="font-bold text-sm">${order.total.toFixed(2)}</div>
+                        <div className="font-bold text-sm">₹{order.total.toFixed(2)}</div>
                         <div className="flex flex-col gap-1">
                           <Badge variant="outline" className="w-fit">
                             {order.orderStatus}

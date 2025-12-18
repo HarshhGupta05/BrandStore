@@ -12,91 +12,20 @@ __turbopack_context__.s([
     ()=>products
 ]);
 const categories = [
-    "Electronics",
     "Clothing",
-    "Books",
-    "Home & Garden",
-    "Sports",
-    "Toys"
+    "Stationary",
+    "Accessories"
 ];
 const products = [
     {
         id: "1",
-        name: "Wireless Headphones",
-        description: "High-quality wireless headphones with noise cancellation",
-        price: 99.99,
-        category: "Electronics",
-        image: "/wireless-headphones.png",
-        stock: 50,
-        manufacturer: "TechCorp"
-    },
-    {
-        id: "2",
-        name: "Cotton T-Shirt",
-        description: "Comfortable 100% cotton t-shirt available in multiple sizes",
-        price: 19.99,
+        name: "IEM Pink T-Shirt",
+        description: "Premium cotton pink t-shirt with IEM branding",
+        price: 250,
         category: "Clothing",
-        image: "/cotton-tshirt.png",
-        stock: 200,
-        manufacturer: "FashionHub",
-        sizes: [
-            "XS",
-            "S",
-            "M",
-            "L",
-            "XL",
-            "XXL"
-        ]
-    },
-    {
-        id: "3",
-        name: "JavaScript Guide",
-        description: "Complete guide to modern JavaScript programming",
-        price: 29.99,
-        category: "Books",
-        image: "/javascript-programming-book.png",
+        image: "/tshirt-pink.jpg",
         stock: 100,
-        manufacturer: "BookPress"
-    },
-    {
-        id: "4",
-        name: "Garden Tool Set",
-        description: "Complete set of essential garden tools including shovel, rake, and pruning shears",
-        price: 49.99,
-        category: "Home & Garden",
-        image: "/garden-tool-set.jpg",
-        stock: 30,
-        manufacturer: "GardenPro"
-    },
-    {
-        id: "5",
-        name: "Yoga Mat",
-        description: "Non-slip yoga mat for all levels, eco-friendly material",
-        price: 24.99,
-        category: "Sports",
-        image: "/rolled-yoga-mat.png",
-        stock: 75,
-        manufacturer: "FitLife"
-    },
-    {
-        id: "6",
-        name: "Building Blocks Set",
-        description: "Educational building blocks for kids aged 3+, 500 pieces",
-        price: 34.99,
-        category: "Toys",
-        image: "/colorful-building-blocks.png",
-        stock: 120,
-        manufacturer: "ToyWorld"
-    },
-    {
-        id: "7",
-        name: "Leather Jacket",
-        description: "Premium leather jacket with classic design",
-        price: 149.99,
-        category: "Clothing",
-        image: "/black-leather-jacket.png",
-        stock: 35,
-        manufacturer: "FashionHub",
+        manufacturer: "IEM Merch",
         sizes: [
             "S",
             "M",
@@ -105,62 +34,96 @@ const products = [
         ]
     },
     {
-        id: "8",
-        name: "Smart Watch",
-        description: "Fitness tracker with heart rate monitor and GPS",
-        price: 199.99,
-        category: "Electronics",
-        image: "/smart-watch-fitness.png",
-        stock: 60,
-        manufacturer: "TechCorp"
-    },
-    {
-        id: "9",
-        name: "Running Shoes",
-        description: "Lightweight running shoes with excellent cushioning",
-        price: 89.99,
+        id: "2",
+        name: "IEM White T-Shirt",
+        description: "Classic white t-shirt with IEM logo",
+        price: 250,
         category: "Clothing",
-        image: "/running-shoes.jpg",
+        image: "/tshirt-white.jpg",
         stock: 100,
-        manufacturer: "FitLife",
+        manufacturer: "IEM Merch",
         sizes: [
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "S",
+            "M",
+            "L",
+            "XL"
         ]
     },
     {
-        id: "10",
-        name: "Cookbook Collection",
-        description: "Essential cookbook with 200+ recipes from around the world",
-        price: 24.99,
-        category: "Books",
-        image: "/cookbook-recipes.jpg",
-        stock: 80,
-        manufacturer: "BookPress"
+        id: "3",
+        name: "IEM Green T-Shirt",
+        description: "Stylish green t-shirt with IEM branding",
+        price: 250,
+        category: "Clothing",
+        image: "/tshirt-green.jpg",
+        stock: 100,
+        manufacturer: "IEM Merch",
+        sizes: [
+            "S",
+            "M",
+            "L",
+            "XL"
+        ]
     },
     {
-        id: "11",
-        name: "LED Desk Lamp",
-        description: "Adjustable LED desk lamp with multiple brightness levels",
-        price: 39.99,
-        category: "Home & Garden",
-        image: "/led-desk-lamp.png",
-        stock: 45,
-        manufacturer: "GardenPro"
+        id: "4",
+        name: "IEM White Bottle",
+        description: "Durable white water bottle with IEM logo",
+        price: 400,
+        category: "Accessories",
+        image: "/bottle-white.jpg",
+        stock: 50,
+        manufacturer: "IEM Merch"
     },
     {
-        id: "12",
-        name: "Tennis Racket",
-        description: "Professional-grade tennis racket for advanced players",
-        price: 129.99,
-        category: "Sports",
-        image: "/tennis-racket.png",
-        stock: 25,
-        manufacturer: "FitLife"
+        id: "5",
+        name: "IEM Heated Bottle",
+        description: "Insulated heated bottle to keep your drinks warm",
+        price: 500,
+        category: "Accessories",
+        image: "/heated-bottle-white.jpg",
+        stock: 30,
+        manufacturer: "IEM Merch"
+    },
+    {
+        id: "6",
+        name: "IEM Mug",
+        description: "White ceramic mug with IEM logo",
+        price: 150,
+        category: "Stationary",
+        image: "/iem-mug.jpeg",
+        stock: 100,
+        manufacturer: "IEM Merch"
+    },
+    {
+        id: "7",
+        name: "IEM Pen",
+        description: "Premium ballpoint pen with IEM branding",
+        price: 80,
+        category: "Stationary",
+        image: "/iem-pen.jpeg",
+        stock: 200,
+        manufacturer: "IEM Merch"
+    },
+    {
+        id: "8",
+        name: "IEM Giftware Set",
+        description: "Complete gift set with notebook, pen and keychain",
+        price: 300,
+        category: "Stationary",
+        image: "/iem-giftware.jpeg",
+        stock: 40,
+        manufacturer: "IEM Merch"
+    },
+    {
+        id: "9",
+        name: "IEM Keychain",
+        description: "Metal keychain with IEM logo",
+        price: 100,
+        category: "Accessories",
+        image: "/keychain.jpeg",
+        stock: 150,
+        manufacturer: "IEM Merch"
     }
 ];
 const dummyOrders = [
@@ -293,7 +256,11 @@ function StoreProvider({ children }) {
                         const { data } = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('/products');
                         setProducts(data);
                     } catch (error) {
-                        console.error("Failed to fetch products:", error);
+                        if (error.response && error.response.status === 500) {
+                            console.warn("Backend products API failed (500), falling back to local data.");
+                        } else {
+                            console.error("Failed to fetch products:", error);
+                        }
                         // Fallback to dummy data if API fails to avoid broken UI during dev
                         setProducts(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$dummy$2d$data$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["products"]);
                     }
@@ -315,7 +282,7 @@ function StoreProvider({ children }) {
                             const mappedOrders = data.map({
                                 "StoreProvider.useEffect.fetchOrders.mappedOrders": (order)=>({
                                         id: order._id,
-                                        userId: order.user._id || order.user,
+                                        userId: order.user?._id || "unknown",
                                         items: order.orderItems.map({
                                             "StoreProvider.useEffect.fetchOrders.mappedOrders": (item)=>({
                                                     productId: item.product,
@@ -327,7 +294,7 @@ function StoreProvider({ children }) {
                                         }["StoreProvider.useEffect.fetchOrders.mappedOrders"]),
                                         total: order.totalPrice,
                                         deliveryDetails: {
-                                            name: order.shippingAddress?.name || order.user && order.user.name || "Unknown User",
+                                            name: order.shippingAddress?.name || order.user?.name || "Unknown User",
                                             phone: order.shippingAddress?.phone || "Not provided",
                                             address: order.shippingAddress?.address || "",
                                             deliveryOption: "home",
@@ -341,6 +308,9 @@ function StoreProvider({ children }) {
                             setOrders(mappedOrders);
                         } catch (e) {
                             console.error("Failed to fetch orders", e);
+                            if (e.response && e.response.status === 401) {
+                                logout();
+                            }
                         }
                     } else {
                         setOrders([]);
@@ -696,7 +666,7 @@ function StoreProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/contexts/store-context.tsx",
-        lineNumber: 504,
+        lineNumber: 511,
         columnNumber: 5
     }, this);
 }

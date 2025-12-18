@@ -139,7 +139,7 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price ($) *</Label>
+                  <Label htmlFor="price">Price (₹) *</Label>
                   <Input
                     id="price"
                     type="number"
@@ -258,7 +258,7 @@ export default function AdminProductsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <p className="font-bold">${product.price.toFixed(2)}</p>
+                  <p className="font-bold">₹{product.price.toFixed(2)}</p>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEdit(product)}>
                       <Pencil className="h-4 w-4" />

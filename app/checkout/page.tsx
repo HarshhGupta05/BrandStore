@@ -225,7 +225,7 @@ export default function CheckoutPage() {
                           {item.selectedSize && ` • Size: ${item.selectedSize}`}
                         </p>
                       </div>
-                      <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-semibold">₹{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   )
                 })}
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
               <div className="space-y-2 border-t pt-4">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal:</span>
-                  <span className="font-semibold text-foreground">${total.toFixed(2)}</span>
+                  <span className="font-semibold text-foreground">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping:</span>
@@ -241,11 +241,11 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Tax (10%):</span>
-                  <span className="font-semibold text-foreground">${(total * 0.1).toFixed(2)}</span>
+                  <span className="font-semibold text-foreground">₹{(total * 0.1).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between border-t pt-3 text-xl font-bold">
                   <span>Total:</span>
-                  <span>${(total * 1.1).toFixed(2)}</span>
+                  <span>₹{(total * 1.1).toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>

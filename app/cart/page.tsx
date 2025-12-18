@@ -76,7 +76,7 @@ export default function CartPage() {
                       </div>
                     </div>
                     <div className="flex flex-col items-end justify-between">
-                      <p className="text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="text-lg font-bold">₹{(item.price * item.quantity).toFixed(2)}</p>
                       <Button
                         size="icon"
                         variant="ghost"
@@ -100,7 +100,7 @@ export default function CartPage() {
               <div className="space-y-3">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal ({cart.reduce((sum, item) => sum + item.quantity, 0)} items):</span>
-                  <span className="font-semibold text-foreground">${total.toFixed(2)}</span>
+                  <span className="font-semibold text-foreground">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping:</span>
@@ -108,11 +108,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Tax:</span>
-                  <span className="font-semibold text-foreground">${(total * 0.1).toFixed(2)}</span>
+                  <span className="font-semibold text-foreground">₹{(total * 0.1).toFixed(2)}</span>
                 </div>
                 <div className="border-t pt-3 flex justify-between text-xl font-bold">
                   <span>Total:</span>
-                  <span>${(total * 1.1).toFixed(2)}</span>
+                  <span>₹{(total * 1.1).toFixed(2)}</span>
                 </div>
               </div>
               <Link href="/checkout">

@@ -155,7 +155,7 @@ export default function AdminManufacturerPage() {
               </div>
 
               <div>
-                <Label htmlFor="cost">Cost per Unit ($)</Label>
+                <Label htmlFor="cost">Cost per Unit (₹)</Label>
                 <Input
                   id="cost"
                   type="number"
@@ -260,8 +260,8 @@ export default function AdminManufacturerPage() {
                       <TableCell>{order.productName}</TableCell>
                       <TableCell className="text-right">{order.quantity}</TableCell>
                       <TableCell className="text-right">{order.quantityReceived || 0}</TableCell>
-                      <TableCell className="text-right">${order.cost.toFixed(2)}</TableCell>
-                      <TableCell className="text-right">${(order.quantity * order.cost).toFixed(2)}</TableCell>
+                      <TableCell className="text-right">₹{order.cost.toFixed(2)}</TableCell>
+                      <TableCell className="text-right">₹{(order.quantity * order.cost).toFixed(2)}</TableCell>
                       <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                       <TableCell>{new Date(order.expectedArrival).toLocaleDateString()}</TableCell>
                       <TableCell>
@@ -326,7 +326,7 @@ export default function AdminManufacturerPage() {
               </div>
 
               <div>
-                <Label htmlFor="edit-cost">Cost per Unit ($)</Label>
+                <Label htmlFor="edit-cost">Cost per Unit (₹)</Label>
                 <Input
                   id="edit-cost"
                   name="cost"

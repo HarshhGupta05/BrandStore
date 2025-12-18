@@ -97,7 +97,7 @@ export default function OrdersPage() {
                         <span>
                           {item.productName} {item.selectedSize && `(${item.selectedSize})`} x {item.quantity}
                         </span>
-                        <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-semibold">₹{(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
@@ -129,7 +129,7 @@ export default function OrdersPage() {
                   {/* Total */}
                   <div className="flex justify-between border-t pt-4 text-lg font-bold">
                     <span>Total:</span>
-                    <span>${order.total.toFixed(2)}</span>
+                    <span>₹{order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>

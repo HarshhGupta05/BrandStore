@@ -143,8 +143,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       try {
         const { data } = await api.get('/products')
         setProducts(data)
-      } catch (error) {
-        console.error("Failed to fetch products:", error)
+      } catch (error: any) {
+        if (error.response && error.response.status === 500) {
+          console.warn("Backend products API failed (500), falling back to local data.")
+        } else {
+          console.error("Failed to fetch products:", error)
+        }
         // Fallback to dummy data if API fails to avoid broken UI during dev
         setProducts(initialProducts)
       }
@@ -164,7 +168,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           // Map backend order to frontend Order interface
           const mappedOrders: Order[] = data.map((order: any) => ({
             id: order._id,
-            userId: order.user._id || order.user,
+            userId: order.user?._id || "unknown",
             items: order.orderItems.map((item: any) => ({
               productId: item.product,
               productName: item.name,
@@ -174,7 +178,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             })),
             total: order.totalPrice,
             deliveryDetails: {
-              name: order.shippingAddress?.name || (order.user && order.user.name) || "Unknown User",
+              name: order.shippingAddress?.name || order.user?.name || "Unknown User",
               phone: order.shippingAddress?.phone || "Not provided",
               address: order.shippingAddress?.address || "",
               deliveryOption: "home", // Default
@@ -185,8 +189,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             createdAt: order.createdAt
           }))
           setOrders(mappedOrders)
-        } catch (e) {
+        } catch (e: any) {
           console.error("Failed to fetch orders", e)
+          if (e.response && e.response.status === 401) {
+            logout()
+          }
         }
       } else {
         setOrders([])

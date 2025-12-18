@@ -51,8 +51,8 @@ export default function AdminDeliveryPage() {
                       <TableCell className="font-medium">{log.orderId}</TableCell>
                       <TableCell>{log.productName}</TableCell>
                       <TableCell className="text-right">{log.quantity}</TableCell>
-                      <TableCell className="text-right">${log.price.toFixed(2)}</TableCell>
-                      <TableCell className="text-right">${(log.quantity * log.price).toFixed(2)}</TableCell>
+                      <TableCell className="text-right">₹{log.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-right">₹{(log.quantity * log.price).toFixed(2)}</TableCell>
                       <TableCell>{log.deliveryAgent}</TableCell>
                       <TableCell>
                         <div className="text-sm">

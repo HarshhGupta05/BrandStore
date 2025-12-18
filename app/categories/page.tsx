@@ -78,7 +78,7 @@ export default function CategoriesPage() {
               </Link>
               <p className="mb-3 text-sm text-muted-foreground line-clamp-2">{product.description}</p>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-2xl font-bold">${product.price.toFixed(2)}</span>
+                <span className="text-2xl font-bold">₹{product.price.toFixed(2)}</span>
                 {user?.role === "admin" && (
                   <span className="text-xs text-muted-foreground">{product.stock} in stock</span>
                 )}

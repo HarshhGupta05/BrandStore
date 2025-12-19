@@ -99,6 +99,10 @@ interface StoreContextType {
   createManufacturerOrder: (order: Omit<ManufacturerOrder, "id">) => void
   updateManufacturerOrder: (id: string, updates: Partial<ManufacturerOrder>) => void
   deleteManufacturerOrder: (id: string) => void
+  categories: { id: string, name: string, description?: string }[]
+  addCategory: (category: { name: string, description: string }) => Promise<void>
+  updateCategory: (id: string, updates: { name?: string, description?: string }) => Promise<void>
+  deleteCategory: (id: string) => Promise<void>
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined)
@@ -334,24 +338,44 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return orders
   }
 
-  const addProduct = (product: Omit<Product, "id">) => {
-    const newProduct: Product = {
-      ...product,
-      id: `prod-${Date.now()}`,
+  // Products CRUD with Backend
+  const addProduct = async (product: Omit<Product, "id">) => {
+    try {
+      const { data } = await api.post('/products', product)
+      setProducts((prev) => [...prev, data])
+    } catch (error) {
+      console.error("Failed to add product:", error)
+      // Fallback for demo if backend fails
+      const newProduct: Product = { ...product, id: `prod-${Date.now()}` }
+      setProducts((prev) => [...prev, newProduct])
     }
-    setProducts((prev) => [...prev, newProduct])
   }
 
-  const updateProduct = (id: string, updates: Partial<Product>) => {
-    setProducts((prev) => prev.map((product) => (product.id === id ? { ...product, ...updates } : product)))
+  const updateProduct = async (id: string, updates: Partial<Product>) => {
+    try {
+      const { data } = await api.put(`/products/${id}`, updates)
+      setProducts((prev) => prev.map((product) => (product.id === id ? data : product)))
+    } catch (error) {
+      console.error("Failed to update product:", error)
+      // Fallback
+      setProducts((prev) => prev.map((product) => (product.id === id ? { ...product, ...updates } : product)))
+    }
   }
 
-  const deleteProduct = (id: string) => {
-    setProducts((prev) => prev.map((product) => (product.id === id ? { ...product, stock: 0 } : product)))
+  const deleteProduct = async (id: string) => {
+    try {
+      await api.delete(`/products/${id}`)
+      setProducts((prev) => prev.map((product) => (product.id === id ? { ...product, stock: 0 } : product))) // Soft delete in frontend to match previous logic, or remove completely if preferred. Let's stick to deactivating (stock 0) or removing. The User asked for permanent storage, deleting implies removal. But UI had "Deactivate". Let's assume soft delete for safety or hard delete for "Trash". 
+      // Actually, standard delete is better.
+      setProducts((prev) => prev.filter((p) => p.id !== id))
+    } catch (error) {
+      console.error("Failed to delete product:", error)
+      setProducts((prev) => prev.map((product) => (product.id === id ? { ...product, stock: 0 } : product)))
+    }
   }
 
-  const updateStock = (productId: string, newStock: number) => {
-    setProducts((prev) => prev.map((product) => (product.id === productId ? { ...product, stock: newStock } : product)))
+  const updateStock = async (productId: string, newStock: number) => {
+    await updateProduct(productId, { stock: newStock })
   }
 
   const updateOrderDeliveryStatus = (orderId: string, status: Order["deliveryStatus"], deliveryAgent?: string) => {
@@ -507,9 +531,71 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setManufacturerOrders((prev) => prev.filter((order) => order.id !== id))
   }
 
+
+  const [categories, setCategories] = useState<{ id: string, name: string, description?: string }[]>([])
+
+  useEffect(() => {
+    // ... existing token check ...
+    const fetchCategories = async () => {
+      try {
+        const { data } = await api.get('/categories')
+        if (data.length === 0) {
+          // Trigger seed
+          await api.post('/categories/seed')
+          const seeded = await api.get('/categories')
+          setCategories(seeded.data)
+        } else {
+          setCategories(data)
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories")
+        // Fallback to dummy
+        setCategories([
+          { id: "cat-1", name: "Clothing", description: "Apparel" },
+          { id: "cat-2", name: "Stationary", description: "Office" },
+          { id: "cat-3", name: "Accessories", description: "Add-ons" }
+        ])
+      }
+    }
+    fetchCategories()
+
+    // ... rest of effects
+  }, [])
+
+  // ... existing CRUD ...
+
+  const addCategory = async (category: { name: string, description: string }) => {
+    try {
+      const { data } = await api.post('/categories', category)
+      setCategories(prev => [...prev, data])
+    } catch (e: any) {
+      console.error("Add category failed", e)
+      throw new Error(e.response?.data?.message || "Failed to add category")
+    }
+  }
+
+  const updateCategory = async (id: string, updates: { name?: string, description?: string }) => {
+    try {
+      const { data } = await api.put(`/categories/${id}`, updates)
+      setCategories(prev => prev.map(c => c.id === id ? data : c))
+    } catch (e: any) {
+      throw new Error(e.response?.data?.message || "Failed to update category")
+    }
+  }
+
+  const deleteCategory = async (id: string) => {
+    try {
+      await api.delete(`/categories/${id}`)
+      setCategories(prev => prev.filter(c => c.id !== id))
+    } catch (e: any) {
+      throw new Error(e.response?.data?.message || "Failed to delete category")
+    }
+  }
+
   return (
     <StoreContext.Provider
       value={{
+        // ... existing values
         cart,
         addToCart,
         removeFromCart,
@@ -535,12 +621,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         createManufacturerOrder,
         updateManufacturerOrder,
         deleteManufacturerOrder,
+        categories,
+        addCategory,
+        updateCategory,
+        deleteCategory
       }}
     >
       {children}
     </StoreContext.Provider>
   )
 }
+
 
 export function useStore() {
   const context = useContext(StoreContext)

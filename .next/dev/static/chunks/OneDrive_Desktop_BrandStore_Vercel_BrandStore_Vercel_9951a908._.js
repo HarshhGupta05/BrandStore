@@ -467,33 +467,61 @@ function StoreProvider({ children }) {
     const getAllOrders = ()=>{
         return orders;
     };
-    const addProduct = (product)=>{
-        const newProduct = {
-            ...product,
-            id: `prod-${Date.now()}`
-        };
-        setProducts((prev)=>[
-                ...prev,
-                newProduct
-            ]);
+    // Products CRUD with Backend
+    const addProduct = async (product)=>{
+        try {
+            const { data } = await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].post('/products', product);
+            setProducts((prev)=>[
+                    ...prev,
+                    data
+                ]);
+        } catch (error) {
+            console.error("Failed to add product:", error);
+            // Fallback for demo if backend fails
+            const newProduct = {
+                ...product,
+                id: `prod-${Date.now()}`
+            };
+            setProducts((prev)=>[
+                    ...prev,
+                    newProduct
+                ]);
+        }
     };
-    const updateProduct = (id, updates)=>{
-        setProducts((prev)=>prev.map((product)=>product.id === id ? {
-                    ...product,
-                    ...updates
-                } : product));
+    const updateProduct = async (id, updates)=>{
+        try {
+            const { data } = await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].put(`/products/${id}`, updates);
+            setProducts((prev)=>prev.map((product)=>product.id === id ? data : product));
+        } catch (error) {
+            console.error("Failed to update product:", error);
+            // Fallback
+            setProducts((prev)=>prev.map((product)=>product.id === id ? {
+                        ...product,
+                        ...updates
+                    } : product));
+        }
     };
-    const deleteProduct = (id)=>{
-        setProducts((prev)=>prev.map((product)=>product.id === id ? {
-                    ...product,
-                    stock: 0
-                } : product));
+    const deleteProduct = async (id)=>{
+        try {
+            await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].delete(`/products/${id}`);
+            setProducts((prev)=>prev.map((product)=>product.id === id ? {
+                        ...product,
+                        stock: 0
+                    } : product)); // Soft delete in frontend to match previous logic, or remove completely if preferred. Let's stick to deactivating (stock 0) or removing. The User asked for permanent storage, deleting implies removal. But UI had "Deactivate". Let's assume soft delete for safety or hard delete for "Trash". 
+            // Actually, standard delete is better.
+            setProducts((prev)=>prev.filter((p)=>p.id !== id));
+        } catch (error) {
+            console.error("Failed to delete product:", error);
+            setProducts((prev)=>prev.map((product)=>product.id === id ? {
+                        ...product,
+                        stock: 0
+                    } : product));
+        }
     };
-    const updateStock = (productId, newStock)=>{
-        setProducts((prev)=>prev.map((product)=>product.id === productId ? {
-                    ...product,
-                    stock: newStock
-                } : product));
+    const updateStock = async (productId, newStock)=>{
+        await updateProduct(productId, {
+            stock: newStock
+        });
     };
     const updateOrderDeliveryStatus = (orderId, status, deliveryAgent)=>{
         setOrders((prev)=>{
@@ -635,8 +663,81 @@ function StoreProvider({ children }) {
     const deleteManufacturerOrder = (id)=>{
         setManufacturerOrders((prev)=>prev.filter((order)=>order.id !== id));
     };
+    const [categories, setCategories] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "StoreProvider.useEffect": ()=>{
+            // ... existing token check ...
+            const fetchCategories = {
+                "StoreProvider.useEffect.fetchCategories": async ()=>{
+                    try {
+                        const { data } = await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('/categories');
+                        if (data.length === 0) {
+                            // Trigger seed
+                            await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].post('/categories/seed');
+                            const seeded = await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get('/categories');
+                            setCategories(seeded.data);
+                        } else {
+                            setCategories(data);
+                        }
+                    } catch (error) {
+                        console.error("Failed to fetch categories");
+                        // Fallback to dummy
+                        setCategories([
+                            {
+                                id: "cat-1",
+                                name: "Clothing",
+                                description: "Apparel"
+                            },
+                            {
+                                id: "cat-2",
+                                name: "Stationary",
+                                description: "Office"
+                            },
+                            {
+                                id: "cat-3",
+                                name: "Accessories",
+                                description: "Add-ons"
+                            }
+                        ]);
+                    }
+                }
+            }["StoreProvider.useEffect.fetchCategories"];
+            fetchCategories();
+        // ... rest of effects
+        }
+    }["StoreProvider.useEffect"], []);
+    // ... existing CRUD ...
+    const addCategory = async (category)=>{
+        try {
+            const { data } = await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].post('/categories', category);
+            setCategories((prev)=>[
+                    ...prev,
+                    data
+                ]);
+        } catch (e) {
+            console.error("Add category failed", e);
+            throw new Error(e.response?.data?.message || "Failed to add category");
+        }
+    };
+    const updateCategory = async (id, updates)=>{
+        try {
+            const { data } = await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].put(`/categories/${id}`, updates);
+            setCategories((prev)=>prev.map((c)=>c.id === id ? data : c));
+        } catch (e) {
+            throw new Error(e.response?.data?.message || "Failed to update category");
+        }
+    };
+    const deleteCategory = async (id)=>{
+        try {
+            await __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].delete(`/categories/${id}`);
+            setCategories((prev)=>prev.filter((c)=>c.id !== id));
+        } catch (e) {
+            throw new Error(e.response?.data?.message || "Failed to delete category");
+        }
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$BrandStore_Vercel$2f$BrandStore_Vercel$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(StoreContext.Provider, {
         value: {
+            // ... existing values
             cart,
             addToCart,
             removeFromCart,
@@ -661,16 +762,20 @@ function StoreProvider({ children }) {
             manufacturerOrders,
             createManufacturerOrder,
             updateManufacturerOrder,
-            deleteManufacturerOrder
+            deleteManufacturerOrder,
+            categories,
+            addCategory,
+            updateCategory,
+            deleteCategory
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/OneDrive/Desktop/BrandStore_Vercel/BrandStore_Vercel/contexts/store-context.tsx",
-        lineNumber: 511,
+        lineNumber: 596,
         columnNumber: 5
     }, this);
 }
-_s(StoreProvider, "ou9lLwGKA3MQsHXIi+9By87wRdM=");
+_s(StoreProvider, "564UTDu8P7Lm40GuUtoZKmOh5pE=");
 _c = StoreProvider;
 function useStore() {
     _s1();

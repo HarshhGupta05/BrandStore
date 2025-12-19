@@ -57,6 +57,11 @@ export default function AdminLayout({
               Products
             </Button>
           </Link>
+          <Link href="/admin/categories">
+            <Button variant="ghost" className="w-full justify-start">
+              Categories
+            </Button>
+          </Link>
           <Link href="/admin/orders">
             <Button variant="ghost" className="w-full justify-start">
               Orders

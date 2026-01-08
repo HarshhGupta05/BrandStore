@@ -13,7 +13,10 @@ export function Navbar() {
   const [isDark, setIsDark] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
+    setMounted(true)
     const darkMode = localStorage.getItem("darkMode") === "true"
     setIsDark(darkMode)
     if (darkMode) {
@@ -69,24 +72,30 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Mobile Menu Trigger */}
           <div className="md:hidden flex items-center">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="mr-2 hover:bg-muted/50">
-                  <Menu className="h-6 w-6 text-foreground/80" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col gap-8 mt-8">
-                  <Link href="/" className="flex items-center gap-3 px-2" onClick={() => setIsOpen(false)}>
-                    <Image src="/logo.png" alt="IEM Logo" width={40} height={40} className="object-contain" />
-                    <span className="text-xl font-bold text-primary tracking-tight">IEM BRANDSTORE</span>
-                  </Link>
-                  <div className="flex flex-col gap-6 px-2">
-                    <NavLinks className="text-base py-2 border-b border-border/50" onClick={() => setIsOpen(false)} />
+            {mounted ? (
+              <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="mr-2 hover:bg-muted/50">
+                    <Menu className="h-6 w-6 text-foreground/80" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                  <div className="flex flex-col gap-8 mt-8">
+                    <Link href="/" className="flex items-center gap-3 px-2" onClick={() => setIsOpen(false)}>
+                      <Image src="/logo.png" alt="IEM Logo" width={40} height={40} className="object-contain" />
+                      <span className="text-xl font-bold text-primary tracking-tight">IEM BRANDSTORE</span>
+                    </Link>
+                    <div className="flex flex-col gap-6 px-2">
+                      <NavLinks className="text-base py-2 border-b border-border/50" onClick={() => setIsOpen(false)} />
+                    </div>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            ) : (
+              <Button variant="ghost" size="icon" className="mr-2 hover:bg-muted/50">
+                <Menu className="h-6 w-6 text-foreground/80" />
+              </Button>
+            )}
           </div>
 
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity group">

@@ -166,6 +166,7 @@ interface StoreContextType {
   submitReview: (productId: string, rating: number, comment: string) => Promise<void>
   addAddress: (address: Address) => Promise<void>
   isLoading: boolean
+  refreshProducts: () => Promise<void>
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined)
@@ -182,6 +183,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [manufacturerOrders, setManufacturerOrders] = useState<ManufacturerOrder[]>([])
   const [vendorInvoices, setVendorInvoices] = useState<VendorInvoice[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  const refreshProducts = async () => {
+    try {
+      const { data } = await api.get('/products')
+      setProducts(data)
+    } catch (error: any) {
+      if (error.response && error.response.status === 500) {
+        console.warn("Backend products API failed (500), falling back to local data.")
+      } else {
+        console.error("Failed to fetch products:", error)
+      }
+      setProducts(initialProducts)
+    }
+  }
 
   useEffect(() => {
     const storedAuth = localStorage.getItem("auth_token")
@@ -207,23 +222,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Fetch products from backend
-    const fetchProducts = async () => {
-      try {
-        const { data } = await api.get('/products')
-        setProducts(data)
-      } catch (error: any) {
-        if (error.response && error.response.status === 500) {
-          console.warn("Backend products API failed (500), falling back to local data.")
-        } else {
-          console.error("Failed to fetch products:", error)
-        }
-        // Fallback to dummy data if API fails to avoid broken UI during dev
-        setProducts(initialProducts)
-      }
-    }
-
-    fetchProducts()
+    refreshProducts()
 
     // Fetch orders if user is logged in
     // This will be handled in a separate effect dependent on 'user'
@@ -855,7 +854,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         fetchOrders,
         submitReview,
         addAddress,
-        isLoading
+        isLoading,
+        refreshProducts
       }}
     >
       {children}

@@ -11,17 +11,17 @@ import Link from "next/link"
 const heroSlides = [
   {
     id: 1,
-    title: "Elevate Your Corporate Identity",
-    description: "Premium merchandise for the modern professional. Showcase your brand with style.",
-    cta: "Shop Collections",
+    title: "Wear Your Pride",
+    description: "Exclusive IEM branded apparel for students and faculty. Show your spirit with style.",
+    cta: "Shop Apparel",
     link: "/categories?category=Clothing",
     bgClass: "bg-gradient-to-br from-primary via-slate-900 to-black",
-    image: "/cotton-tshirt.png"
+    image: "/tshirt-white.jpg" // Changed from iem-tshirt.png to existing white tshirt
   },
   {
     id: 2,
-    title: "Executive Accessories",
-    description: "Refined tools for your daily workflow. Enhance productivity with elegance.",
+    title: "Campus Essentials",
+    description: "Mugs, notebooks, and gear to keep you powered through the semester.",
     cta: "Explore Accessories",
     link: "/categories?category=Accessories",
     bgClass: "bg-gradient-to-br from-slate-900 via-slate-800 to-primary/80",
@@ -29,9 +29,9 @@ const heroSlides = [
   },
   {
     id: 3,
-    title: "Signature Gift Sets",
-    description: "The perfect way to say thank you to your team. Memorable gifts for every occasion.",
-    cta: "View Gifts",
+    title: "IEM Spirit Collection",
+    description: "Celebrate your journey with our premium university merchandise. Perfect for gifting.",
+    cta: "View Collection",
     link: "/categories?category=Stationary",
     bgClass: "bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-800",
     image: "/iem-giftware.jpeg"

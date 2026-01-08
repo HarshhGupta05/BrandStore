@@ -93,6 +93,11 @@ export default function AdminLayout({
               Vendor Invoices
             </Button>
           </Link>
+          <Link href="/admin/requisitions">
+            <Button variant="ghost" className="w-full justify-start">
+              Requisitions / Events
+            </Button>
+          </Link>
         </aside>
         <main className="flex-1">{children}</main>
       </div>

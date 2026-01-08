@@ -58,7 +58,7 @@ export function Navbar() {
           </Button>
         </Link>
       )}
-      {user && (
+      {user && !isAdmin && (
         <Link href="/orders" className={`text-sm font-medium hover:text-primary transition-colors uppercase tracking-wide ${className}`} onClick={onClick}>
           My Orders
         </Link>

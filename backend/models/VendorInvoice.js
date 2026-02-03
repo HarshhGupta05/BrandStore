@@ -22,6 +22,22 @@ const vendorInvoiceSchema = new mongoose.Schema({
         costPerUnit: Number,
         total: Number
     }],
+    subTotal: {
+        type: Number,
+        default: 0
+    },
+    discount: {
+        type: Number,
+        default: 0
+    },
+    cgst: {
+        type: Number,
+        default: 0
+    },
+    sgst: {
+        type: Number,
+        default: 0
+    },
     totalAmount: {
         type: Number,
         required: true

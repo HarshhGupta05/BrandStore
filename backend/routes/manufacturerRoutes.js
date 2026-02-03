@@ -52,7 +52,7 @@ const VendorInvoice = require('../models/VendorInvoice');
 // @access  Private/Admin
 router.put('/:id/receive', async (req, res) => {
     try {
-        const { receivedItems } = req.body; // Array of { productId, receivedQuantity, receivedDate }
+        const { receivedItems, discount, cgst, sgst } = req.body; // Array of { productId, receivedQuantity, receivedDate }
         const order = await ManufacturerOrder.findOne({ orderId: req.params.id });
 
         if (!order) {
@@ -64,7 +64,7 @@ router.put('/:id/receive', async (req, res) => {
         }
 
         const invoiceItems = [];
-        let invoiceTotal = 0;
+        let invoiceSubTotal = 0;
         const receivingBatchDate = receivedItems.length > 0 && receivedItems[0].receivedDate
             ? new Date(receivedItems[0].receivedDate)
             : new Date();
@@ -77,10 +77,9 @@ router.put('/:id/receive', async (req, res) => {
                 const receivedDate = receivedItem.receivedDate ? new Date(receivedItem.receivedDate) : new Date();
 
                 if (quantityToReceive > 0) {
-                    // 1. Update Order Item Local Stats
+                    // Update Order Item Local Stats
                     orderItem.quantityReceived = (orderItem.quantityReceived || 0) + quantityToReceive;
 
-                    // Legacy nested support (optional, keeping for safety)
                     if (!orderItem.deliveries) orderItem.deliveries = [];
                     orderItem.deliveries.push({
                         receivedQuantity: quantityToReceive,
@@ -88,28 +87,27 @@ router.put('/:id/receive', async (req, res) => {
                         receivedBy: 'admin'
                     });
 
-                    // 2. Update Global Receiving History
+                    // Update Global Receiving History
                     if (!order.receivingHistory) order.receivingHistory = [];
                     order.receivingHistory.push({
-                        productId: orderItem.productId, // Using Schema.Types.ObjectId if available, else string
+                        productId: orderItem.productId,
                         quantityReceived: quantityToReceive,
                         receivedDate: receivedDate,
                         costPerUnit: orderItem.cost
                     });
 
-                    // 3. Prepare Invoice Item
+                    // Prepare Invoice Item
                     const lineTotal = quantityToReceive * orderItem.cost;
                     invoiceItems.push({
-                        // Assuming productId is a valid ObjectId string for reference, or fallback
-                        productId: receivedItem.productId, // Storing strict ID for reference
+                        productId: receivedItem.productId,
                         productName: orderItem.productName,
                         quantity: quantityToReceive,
                         costPerUnit: orderItem.cost,
                         total: lineTotal
                     });
-                    invoiceTotal += lineTotal;
+                    invoiceSubTotal += lineTotal;
 
-                    // 4. Update Product Stock
+                    // Update Product Stock
                     let product = await Product.findOne({ id: receivedItem.productId });
                     if (!product) {
                         try {
@@ -120,8 +118,6 @@ router.put('/:id/receive', async (req, res) => {
                     if (product) {
                         product.stock += quantityToReceive;
                         await product.save();
-                    } else {
-                        console.warn(`Product not found for ID: ${receivedItem.productId}, skipping stock update.`);
                     }
                 }
             }
@@ -131,16 +127,25 @@ router.put('/:id/receive', async (req, res) => {
         if (invoiceItems.length > 0) {
             const invoiceId = `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-            // Fetch order again with populate to get vendor name
             const orderWithVendor = await ManufacturerOrder.findOne({ orderId: order.orderId }).populate('vendor');
             const vendorName = orderWithVendor?.vendor?.name || "Unknown Vendor";
+
+            const taxRateC = Number(cgst) || 0;
+            const taxRateS = Number(sgst) || 0;
+            const disc = Number(discount) || 0;
+
+            const totalPayable = invoiceSubTotal - disc + (invoiceSubTotal * taxRateC / 100) + (invoiceSubTotal * taxRateS / 100);
 
             const newInvoice = new VendorInvoice({
                 invoiceId,
                 manufacturerOrderId: order.orderId,
                 vendorName: vendorName,
                 items: invoiceItems,
-                totalAmount: invoiceTotal,
+                subTotal: invoiceSubTotal,
+                discount: disc,
+                cgst: taxRateC,
+                sgst: taxRateS,
+                totalAmount: totalPayable,
                 invoiceDate: receivingBatchDate,
                 status: 'Pending'
             });

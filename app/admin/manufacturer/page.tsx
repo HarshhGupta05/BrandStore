@@ -24,6 +24,9 @@ export default function AdminManufacturerPage() {
   const [receiveQuantities, setReceiveQuantities] = useState<{ [key: string]: string }>({})
   const [receiveDates, setReceiveDates] = useState<{ [key: string]: string }>({}) // New state for per-item dates
   const [expandedHistory, setExpandedHistory] = useState<string | null>(null) // productId for expanded history
+  const [discount, setDiscount] = useState("0")
+  const [cgst, setCgst] = useState("0")
+  const [sgst, setSgst] = useState("0")
 
 
   // Create Form State
@@ -119,6 +122,9 @@ export default function AdminManufacturerPage() {
       initialDates[item.productId] = new Date().toISOString().split("T")[0]
     })
     setReceiveDates(initialDates)
+    setDiscount("0")
+    setCgst("0")
+    setSgst("0")
 
     setExpandedHistory(null)
     setIsReceiveOpen(true)
@@ -147,10 +153,16 @@ export default function AdminManufacturerPage() {
       return
     }
 
-    await receiveManufacturerOrderItems(selectedOrder.orderId, itemsToReceive.map(i => ({
-      ...i,
-      receivedDate: receiveDates[i.productId] || new Date().toISOString().split("T")[0]
-    })))
+    await receiveManufacturerOrderItems(
+      selectedOrder.orderId,
+      itemsToReceive.map(i => ({
+        ...i,
+        receivedDate: receiveDates[i.productId] || new Date().toISOString().split("T")[0]
+      })),
+      Number(discount),
+      Number(cgst),
+      Number(sgst)
+    )
 
     setIsReceiveOpen(false)
     setSelectedOrder(null)
@@ -650,6 +662,46 @@ export default function AdminManufacturerPage() {
                       </div>
                     )
                   })}
+                </div>
+
+                {/* Tax and Discount Section */}
+                <div className="bg-muted/30 p-6 rounded-xl border mt-6">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Invoice Adjustments</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="discount" className="text-xs">Flat Discount (₹)</Label>
+                      <Input
+                        id="discount"
+                        type="number"
+                        placeholder="0"
+                        value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cgst" className="text-xs">CGST (%)</Label>
+                      <Input
+                        id="cgst"
+                        type="number"
+                        placeholder="0"
+                        value={cgst}
+                        onChange={(e) => setCgst(e.target.value)}
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="sgst" className="text-xs">SGST (%)</Label>
+                      <Input
+                        id="sgst"
+                        type="number"
+                        placeholder="0"
+                        value={sgst}
+                        onChange={(e) => setSgst(e.target.value)}
+                        className="h-10"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

@@ -111,6 +111,14 @@ const importData = async () => {
         await Product.deleteMany();
         await User.deleteMany();
 
+        // Drop stale slug index if it exists
+        try {
+            await Product.collection.dropIndex('slug_1');
+            console.log('Stale slug index dropped');
+        } catch (err) {
+            // Index might not exist, which is fine
+        }
+
         const createdUsers = await User.create([
             {
                 name: 'Admin User',

@@ -79,7 +79,7 @@ export function HeroCarousel() {
                 <div className="relative z-10 flex flex-col justify-center p-8 md:pl-24 space-y-8 order-2 md:order-1 items-center text-center md:items-start md:text-left">
                   <div className="animate-in fade-in slide-in-from-left-8 duration-700 delay-100 max-w-2xl">
                     <div className="inline-block px-3 py-1 mb-6 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                      <span className="text-xs font-semibold tracking-widest uppercase text-white/80">Premium Collection 2025</span>
+                      <span className="text-xs font-semibold tracking-widest uppercase text-white/80">Premium Collection 2026</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-balance drop-shadow-lg leading-[1.1]">
                       {slide.title}

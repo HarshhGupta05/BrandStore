@@ -132,9 +132,29 @@ export interface VendorInvoice {
     costPerUnit: number
     total: number
   }[]
+  subTotal: number
+  discount: number
+  cgst: number
+  sgst: number
   totalAmount: number
   invoiceDate: string
   status: "Pending" | "Paid"
+  createdAt: string
+}
+
+export interface Report {
+  _id: string
+  title: string
+  startDate: string
+  endDate: string
+  totalRevenue: number
+  totalExpenses: number
+  netProfit: number
+  totalOrders: number
+  avgOrderValue: number
+  successRate: number
+  generatedBy: { _id: string, name: string }
+  notes?: string
   createdAt: string
 }
 
@@ -163,8 +183,8 @@ interface StoreContextType {
   updateOrderDeliveryStatus: (orderId: string, status: Order["deliveryStatus"], deliveryAgent?: string) => void
   deliveryLogs: DeliveryLog[]
   manufacturerOrders: ManufacturerOrder[]
-  createManufacturerOrder: (items: any[], expectedDate: string, vendorName: string) => Promise<void>
-  receiveManufacturerOrderItems: (orderId: string, items: { productId: string, receivedQuantity: number, receivedDate?: string }[]) => Promise<void>
+  createManufacturerOrder: (orderData: any) => Promise<void>
+  receiveManufacturerOrderItems: (orderId: string, items: { productId: string, receivedQuantity: number, receivedDate?: string }[], discount?: number, cgst?: number, sgst?: number) => Promise<void>
   updateManufacturerOrderStatus: (orderId: string, status: string) => Promise<void>
   deleteManufacturerOrder: (orderId: string) => Promise<void>
   categories: { id: string, name: string, description?: string }[]
@@ -183,6 +203,10 @@ interface StoreContextType {
   createVendor: (vendorData: Partial<Vendor>) => Promise<void>
   fetchVendors: () => Promise<void>
   refreshProducts: () => Promise<void>
+  savedReports: Report[]
+  fetchReports: () => Promise<void>
+  saveReport: (reportData: Partial<Report>) => Promise<Report>
+  deleteReport: (id: string) => Promise<void>
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined)
@@ -199,6 +223,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [manufacturerOrders, setManufacturerOrders] = useState<ManufacturerOrder[]>([])
   const [vendorInvoices, setVendorInvoices] = useState<VendorInvoice[]>([])
   const [vendors, setVendors] = useState<Vendor[]>([])
+  const [savedReports, setSavedReports] = useState<Report[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const refreshProducts = async () => {
@@ -671,9 +696,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const receiveManufacturerOrderItems = async (orderId: string, items: { productId: string, receivedQuantity: number, receivedDate?: string }[]) => {
+  const receiveManufacturerOrderItems = async (orderId: string, items: { productId: string, receivedQuantity: number, receivedDate?: string }[], discount?: number, cgst?: number, sgst?: number) => {
     try {
-      const { data } = await api.put(`/manufacturer-orders/${orderId}/receive`, { receivedItems: items })
+      const { data } = await api.put(`/manufacturer-orders/${orderId}/receive`, {
+        receivedItems: items,
+        discount,
+        cgst,
+        sgst
+      })
 
       // Update local state
       setManufacturerOrders((prev) => prev.map(order =>
@@ -850,10 +880,41 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const fetchReports = async () => {
+    try {
+      const { data } = await api.get('/reports')
+      setSavedReports(data)
+    } catch (error) {
+      console.error("Failed to fetch reports", error)
+    }
+  }
+
+  const saveReport = async (reportData: Partial<Report>): Promise<Report> => {
+    try {
+      const { data } = await api.post('/reports', reportData)
+      setSavedReports(prev => [data, ...prev])
+      return data
+    } catch (error) {
+      console.error("Failed to save report", error)
+      throw error
+    }
+  }
+
+  const deleteReport = async (id: string) => {
+    try {
+      await api.delete(`/reports/${id}`)
+      setSavedReports(prev => prev.filter(r => r._id !== id))
+    } catch (error) {
+      console.error("Failed to delete report", error)
+      throw error
+    }
+  }
+
   // Effect to load vendors on mount (or admin load)
   useEffect(() => {
     if (isAdmin) {
       fetchVendors()
+      fetchReports()
     }
   }, [isAdmin])
 
@@ -902,7 +963,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         vendors,
         createVendor,
         fetchVendors,
-        refreshProducts
+        refreshProducts,
+        savedReports,
+        fetchReports,
+        saveReport,
+        deleteReport
       }}
     >
       {children}

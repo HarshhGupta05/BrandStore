@@ -41,7 +41,7 @@ export default function VendorInvoicesPage() {
     const handlePayInvoice = async () => {
         if (selectedInvoice) {
             await payVendorInvoice(selectedInvoice.invoiceId)
-            setSelectedInvoice(prev => ({ ...prev, status: 'Paid' })) // Optimistic update for modal
+            setSelectedInvoice((prev: any) => ({ ...prev, status: 'Paid' })) // Optimistic update for modal
             setIsDetailsOpen(false)
         }
     }
@@ -217,9 +217,33 @@ export default function VendorInvoicesPage() {
                         </div>
 
                         <div className="flex justify-end pt-2">
-                            <div className="text-right">
-                                <span className="text-muted-foreground text-sm mr-4">Total Payable:</span>
-                                <span className="text-2xl font-bold">₹{selectedInvoice?.totalAmount.toLocaleString()}</span>
+                            <div className="space-y-1.5 w-full max-w-[250px]">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">Sub-total:</span>
+                                    <span className="font-medium">₹{selectedInvoice?.subTotal?.toLocaleString() || selectedInvoice?.totalAmount.toLocaleString()}</span>
+                                </div>
+                                {selectedInvoice?.discount > 0 && (
+                                    <div className="flex justify-between text-sm text-red-600">
+                                        <span className="">Discount:</span>
+                                        <span className="font-medium">-₹{selectedInvoice?.discount.toLocaleString()}</span>
+                                    </div>
+                                )}
+                                {selectedInvoice?.cgst > 0 && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">CGST ({selectedInvoice.cgst}%):</span>
+                                        <span className="font-medium">₹{(selectedInvoice.subTotal * selectedInvoice.cgst / 100).toLocaleString()}</span>
+                                    </div>
+                                )}
+                                {selectedInvoice?.sgst > 0 && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">SGST ({selectedInvoice.sgst}%):</span>
+                                        <span className="font-medium">₹{(selectedInvoice.subTotal * selectedInvoice.sgst / 100).toLocaleString()}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between pt-2 border-t mt-2">
+                                    <span className="font-bold text-lg">Total:</span>
+                                    <span className="text-2xl font-bold text-primary">₹{selectedInvoice?.totalAmount.toLocaleString()}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

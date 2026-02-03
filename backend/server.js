@@ -25,6 +25,7 @@ app.use('/api/vendor-invoices', require('./routes/vendorInvoiceRoutes'));
 app.use('/api/vendors', require('./routes/vendorRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/requisitions', require('./routes/requisitionRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
 
 app.get('/', (req, res) => {
     res.send('API is running...');
